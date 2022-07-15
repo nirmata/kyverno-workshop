@@ -1,3 +1,7 @@
+### Create a Kubernetes cluster
+
+k3d cluster create kyverno
+
 ### Add the Kyverno Helm repo
 
 helm repo add kyverno https://kyverno.github.io/kyverno/
@@ -10,3 +14,32 @@ helm repo update
 
 helm install kyverno kyverno/kyverno -n kyverno --create-namespace
 
+### Set your alias to kubectl to save on typing
+
+alias k=kubectl
+
+### Check the status and ensure the Kyverno Pod is running
+
+k get po -n kyverno
+
+### Inspect all the CRDs Kyverno creates
+
+k get crd | grep kyverno
+
+### Explore a ClusterPolicy
+
+k explain clusterpolicy
+
+k explain clusterpolicy.spec
+
+### See all the possibilities in a `match` block
+
+k explain clusterpolicy.spec.rules.match.any --recursive
+
+### Inspect the sample policy `clusterpolicy.yaml` and answer the following questions:
+
+1. What type of rule does this contain?
+2. What type of Kubernetes resource (kind) does this target?
+3. Would this policy apply to said resource kind if it carried the label `app=minor`?
+4. What does this policy do?
+5. What would be the behavior by Kyverno if a user tried to create said resource which had carried the annotation `corp.org/department=finance`?
