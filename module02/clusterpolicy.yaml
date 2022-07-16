@@ -25,3 +25,22 @@ spec:
         metadata:
           annotations:
             corp.org/backup: "required"
+  - name: some-other-rule-name
+    match:
+      any:
+      - resources:
+          kind:
+            - ConfigMap
+          namespaceSelector:
+            matchExpressions:
+            - key: zone
+              operator: In
+              values:
+              - region-a
+              - region-c
+    validate:
+      message: "A license is required."
+      pattern:
+        spec:
+          data:
+            license: "?*"
