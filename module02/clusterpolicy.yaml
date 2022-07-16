@@ -10,7 +10,7 @@ spec:
     match:
       any:
       - resources:
-          kind:
+          kinds:
             - Pod
           selector:
             matchLabels:
@@ -29,7 +29,7 @@ spec:
     match:
       any:
       - resources:
-          kind:
+          kinds:
             - ConfigMap
           namespaceSelector:
             matchExpressions:
