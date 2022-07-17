@@ -1,0 +1,14 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: aws-service
+spec:
+  rules:
+  - name: add-service-annotations
+    match:
+      any:
+      - resources:
+
+    mutate:
+      patchStrategicMerge:
+        
