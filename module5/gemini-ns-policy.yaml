@@ -1,0 +1,15 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: gemini-ns-policy
+spec:
+  rules:
+  - name: gen-resourcequota
+    match:
+    generate:
+      apiVersion:
+      kind:
+      name: customer-resourcequota
+      synchronize: false
+      namespace:
+      data:
