@@ -3,6 +3,7 @@ kind: ClusterPolicy
 metadata:
   name: gemini-ns-policy
 spec:
+  generateExistingOnPolicyUpdate: false
   rules:
   - name: gen-resourcequota
     match:

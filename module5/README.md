@@ -20,4 +20,25 @@ your ClusterPolicy, test it to ensure it works and a new ResourceQuota is genera
 **TIP**: If your attempts to generate the target resource fail, inspect the related UpdateRequest with `k get ur -A`.
 To try again with the same name, delete the UpdateRequest which failed.
 
+
+----------------------------------------------------------------------------------------------
+
+
+## Task 2
+
+Now that you are successfully generating a ResourceQuota for new customer Namespaces, you need
+to increase the CPU limits in each of them once a customer has paid for additional resources.
+Because you have many customer Namespaces, performing manual or even scripted modifications
+is untenable. You wish to leverage Kyverno policy for this task once again.
+
+Modify the `gemini-ns-policy` ClusterPolicy in the following three ways:
+
+1. Change `spec.generateExistingOnPolicyUpdate` from `false` to `true`.
+2. Change `synchronize` from `false` to `true`.
+3. Increase `limits.cpu` from `8` to `12`.
+
+Save the ClusterPolicy. Now check the ResourceQuota(s) in the downstream Namespaces.
+
+What happened? Perform other modifications to the policy as desired and ensure those changes are replicated downstream.
+
 Once you have verified your policy is effective, clean up the resources created in this lab.
