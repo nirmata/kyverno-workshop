@@ -1,14 +1,13 @@
 # Module 5: Generation
 
-
-## Task 1
-
 You are on an SRE team for a startup company which sells Kubernetes-as-a-Service to its customers.
 The internal project name for this offering is "Gemini". In this particular cluster, you provision a new Namespace per customer but always
 with a set number of resources which can be consumed in that Namespace because the customer plans
 sold are of currently only one size. Rather than manually setting these resource restrictions, you
 decide to use Kyverno to automate the configuration of these Namespaces so customers cannot
 use more resources than you allocate.
+
+## Task 1
 
 Modify the ClusterPolicy resource manifest `gemini-ns-policy.yaml` so that whenever a new Namespace
 is created which begins with the string `gemini-`, a new ResourceQuota is created in that Namespace.

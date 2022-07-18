@@ -1,0 +1,22 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: keyless-sig-verification
+spec:
+  validationFailureAction: enforce
+  webhookTimeoutSeconds: 30
+  rules:
+    - name: check-zulu-keyless
+      match:
+        any:
+        - resources:
+            kinds:
+              - Pod
+      verifyImages:
+      - imageReferences:
+        - "ghcr.io/chipzoller/zulu:*"
+        attestors:
+        - entries:
+          - keyless:
+              subject: "https://github.com/chipzoller/zulu/.github/workflows/slsa-generic-keyless.yaml@refs/heads/main"
+              issuer: "https://token.actions.githubusercontent.com"

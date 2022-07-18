@@ -1,5 +1,8 @@
 # Module 3: Validation & Policy Reports
 
+In this lab you will get familiar with some of the basics of Kyverno by
+examining `validate` rules and understanding how they impact policy reports.
+
 
 ## Task 1
 
@@ -35,12 +38,14 @@ Fix then re-apply the Namespace resource defined in `ns.yaml` so it passes the p
 ----------------------------------------------------------------------------------------------
 
 
-## Task 2
-
 As a member of the SRE team, you have received a request from management
 to place restrictions on the type of workloads in the `warehouse` Namespace.
 Specifically, they wish to control the use of ServiceAccounts in that Namespace
 to only permit ones which are custom, thus disallowing use of any defaults.
+
+
+## Task 2
+
 
 Modify the incomplete `check-sa.yaml` ClusterPolicy manifest so it does two things:
 

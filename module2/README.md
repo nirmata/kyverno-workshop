@@ -1,9 +1,17 @@
 # Module 2: Installation & Policy Overview
 
+In this lab, you will build the necessary environment in order to set the foundation for
+future labs. Specifically, you will:
+
+1. Create a new Kubernetes cluster
+2. Add the Kyverno Helm repository
+3. Install Kyverno
+4. Inspect some key Kyverno CustomResourceDefinitions (CRDs) corresponding to policies
 
 ## Task 1
 
-Create a Kubernetes cluster
+Create a Kubernetes cluster. You may use any software with which you feel most comfortable, however this course
+provides steps for K3d.
 
 ```sh
 k3d cluster create kyverno
@@ -27,7 +35,8 @@ Install the Kyverno chart with a single replica in your lab environment
 helm install kyverno kyverno/kyverno -n kyverno --create-namespace
 ```
 
-Set your alias to kubectl to save on typing
+Set your alias to kubectl to save on typing. This step is optional, however
+subsequent commands given throughout this course will use `k` to alias `kubectl`.
 
 ```sh
 alias k=kubectl
