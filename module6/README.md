@@ -27,6 +27,9 @@ replacing the ClusterPolicy, and re-submitting the same Pod. Is it blocked?
 Prior to proceeding with Task 2, ensure the Pod exists in the cluster.
 
 
+----------------------------------------------------------------------------------------------
+
+
 ## Task 2
 
 With the Pod created in Task 1, inspect the image referenced in the Pod. How is this value

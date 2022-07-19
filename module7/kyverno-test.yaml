@@ -1,0 +1,16 @@
+name: disallow-host-ports
+policies:
+  - test-disallow-host-ports.yaml
+resources:
+  - resource.yaml
+results:
+  - policy: disallow-host-ports
+    rule: host-ports-none
+    resource: badpod
+    kind: Pod
+    result: fail
+  - policy: disallow-host-ports
+    rule: host-ports-none
+    resource: goodpod
+    kind: Pod
+    result: pass

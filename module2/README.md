@@ -48,6 +48,10 @@ Check the status and ensure the Kyverno Pod is running
 k get po -n kyverno
 ```
 
+
+----------------------------------------------------------------------------------------------
+
+
 ## Task 2
 
 
