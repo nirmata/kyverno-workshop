@@ -16,6 +16,7 @@ the values of the ones you are creating by hand today reflected in `resourcequot
 your ClusterPolicy, test it to ensure it works and a new ResourceQuota is generated.
 
 **NOTE**: You may not hard code the value of the `namespace` field under the `generate` object. It must be dynamic.
+
 **TIP**: If your attempts to generate the target resource fail, inspect the related UpdateRequest with `k get ur -A`.
 To try again with the same name, delete the UpdateRequest which failed.
 

@@ -14,6 +14,7 @@ to Services but only if the given key does not exist. Use the Service resource m
 to test your policy.
 
 **NOTE**: Do not change the patch type in the ClusterPolicy.
+
 **HINT**: There is an anchor specific to mutate rules which works well in these cases.
 
 ----------------------------------------------------------------------------------------------
@@ -34,7 +35,9 @@ field in a Pod `spec.securityContext` to `true`. Use the `pod.yaml` Pod resource
 manifest to prove your policy works as expected.
 
 **NOTE**: Do not change the patch type in the Policy.
+
 **REMINDER**: This is a Policy (Namespaced) and you may need to create the appropriate Namespace first.
+
 **HINT**: The most common operations for JSON patches are `add`, `replace`, and `remove`.
 
 Once complete, clean up the policies and resources from this lab.
