@@ -19,7 +19,7 @@ Create the ClusterPolicy in your lab environment and ensure it reports as ready.
 
 Apply the Pod manifest `keyless-pod.yaml` and ensure the Pod is successfully created.
 
-**NOTE**: This verification process may take longer than previous verifications. Do not cancel the process.
+**NOTE**: The Pod should go into CrashLoopBackOff, which is expected.
 
 Test the efficacy of the policy by deleting the Pod you just created, changing the value of the `issuer` field,
 replacing the ClusterPolicy, and re-submitting the same Pod. Is it blocked?
