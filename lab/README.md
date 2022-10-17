@@ -77,3 +77,32 @@ k apply -f ns-good.yaml
 
 In this task, you will get a basic understanding of Kyverno `mutate` rules by creating a mutation in your cluster.
 
+Open the `mutate-pods.yaml` ClusterPolicy and inspect it.
+
+Create the ClusterPolicy in your test cluster.
+
+```sh
+k apply -f mutate-pods.yaml
+```
+
+Create the Pod in the `pod.yaml` file.
+
+```sh
+k apply -f pod.yaml
+```
+
+Inspect the Pod and see if the mutation was applied. Although we did not create a Secret called `somesecret`, it should not prevent the mutation from occuring.
+
+```sh
+k get po mypod -o yaml
+```
+
+Once you've verified that the mutation occured on the bare Pod, try to create the Deployment defined in `deployment.yaml`.
+
+Inspect the Deployment definition. Did the mutation occur here?
+
+```sh
+k get deploy mydeployment -o yaml
+```
+
+The Deployment should also have been mutated as a result of Kyverno's Pod controller rule auto-generation feature described at https://kyverno.io/docs/writing-policies/autogen/. Although the ClusterPolicy named `mutate-pods` was only written to match on Pods, Kyverno intelligently and automatically translated this rule to apply to Deployments thereby matching and mutating the `mydeployment` resource.
