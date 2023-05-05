@@ -1,0 +1,46 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: mystery-policy-name
+spec:
+  validationFailureAction: enforce
+  background: true
+  rules:
+    - name: some-rule-name
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              selector:
+                matchLabels:
+                  app: critical
+      exclude:
+        any:
+          - clusterRoles:
+              - cluster-admin
+      validate:
+        message: "The annotation `corp.org/backup` must be set to `required`."
+        pattern:
+          metadata:
+            annotations:
+              corp.org/backup: "required"
+    - name: some-other-rule-name
+      match:
+        any:
+          - resources:
+              kinds:
+                - ConfigMap
+              namespaceSelector:
+                matchExpressions:
+                  - key: zone
+                    operator: In
+                    values:
+                      - region-a
+                      - region-c
+      validate:
+        message: "A license is required."
+        pattern:
+          spec:
+            data:
+              license: "?*"
