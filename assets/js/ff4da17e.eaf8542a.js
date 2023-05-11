@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkkyverno_workshop=self.webpackChunkkyverno_workshop||[]).push([[686],{537:o=>{o.exports=JSON.parse('{"label":"hello","permalink":"/kyverno-workshop/blog/tags/hello","allTagsPath":"/kyverno-workshop/blog/tags","count":2}')}}]);
