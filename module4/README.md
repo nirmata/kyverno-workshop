@@ -3,14 +3,15 @@
 ## Image signing and verification
 ### Generate key-pair
 ```sh
-
+cosign generate-key-pair
 ```
 
 ### Sign container image
 ```sh
-
+cosign sign --key cosign.key user/demo
 ```
 
+### Exercise
 Let us now look at the Kyverno policy used to verify image signatures.
 ```sh
 apiVersion: kyverno.io/v1

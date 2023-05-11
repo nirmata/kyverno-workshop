@@ -12,6 +12,9 @@ git clone git@github.com:kyverno/policies.git
 ## Pod Security Standards (PSS)
 The Pod Security Standards define three different policies to broadly cover the security spectrum. These policies are cumulative and range from highly-permissive to highly-restrictive. For more information on PSS, refer to the official [Kubernetes documentation](https://kubernetes.io/docs/concepts/security/pod-security-standards/)
 
+###TODO
+Create a task for good pod / bad pod example
+
 ### Using Kyverno to implement PSS
 The `Baseline/Default` profile is minimally restrictive and denies the most common vulnerabilities while the `Restricted` profile is more heavily restrictive but follows many more of the common security best practices for Pods.
 
