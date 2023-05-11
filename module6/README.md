@@ -71,7 +71,7 @@ metadata:
   namespace: default
 spec:
   exceptions:
-  - policyName: disallow-latest-tag-custom
+  - policyName: disallow-latest-tag
     ruleNames:
     - require-image-tag
     - validate-image-tag
