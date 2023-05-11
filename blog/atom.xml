@@ -6,7 +6,7 @@
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://github.com/kyverno-workshop/blog"/>
     <subtitle>Kyverno Workshop Blog</subtitle>
-    <icon>https://github.com/kyverno-workshop/img/favicon.ico</icon>
+    <icon>https://github.com/kyverno-workshop/img/kyverno.ico</icon>
     <entry>
         <title type="html"><![CDATA[Welcome]]></title>
         <id>https://github.com/kyverno-workshop/blog/welcome</id>
