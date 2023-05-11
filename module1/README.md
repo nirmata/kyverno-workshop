@@ -1,4 +1,4 @@
-# Module 2: Installation & Policy Overview
+# Module 1: Installation & Policy Overview
 
 In this lab, you will build the necessary environment in order to set the foundation for
 future labs. Specifically, you will:

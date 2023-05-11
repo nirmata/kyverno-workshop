@@ -1,4 +1,4 @@
-# Module 3: Policy Exceptions
+# Module 6: Policy Exceptions
 
 Policy Exceptions isn't GA yet, so we must enable the feature first by adding `--enablePolicyException=true` to `kyverno` container arguments.
 ```bash
