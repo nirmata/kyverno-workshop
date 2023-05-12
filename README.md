@@ -1,7 +1,5 @@
 # kyverno-workshop
-Labs and resources for a Kyverno workshop.
-
-## External Resources
+Labs and resources for Kyverno workshop for KCD Bangalore, 2023.
 
 
 ### Kyverno official documentation
