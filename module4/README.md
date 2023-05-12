@@ -1,4 +1,4 @@
-# Supply chain security
+# Module 4: Supply chain security
 
 ## Image signing and verification
 ### Generate key-pair
