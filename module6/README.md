@@ -68,7 +68,7 @@ apiVersion: kyverno.io/v2alpha1
 kind: PolicyException
 metadata:
   name: pe-disallow-latest-tag
-  namespace: default
+  namespace: kyverno
 spec:
   exceptions:
   - policyName: disallow-latest-tag
