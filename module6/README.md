@@ -2,7 +2,7 @@
 
 Policy Exceptions isn't GA yet, so we must enable the feature first by adding `--enablePolicyException=true` to `kyverno` container arguments.
 ```bash
-$ k -n kyverno edit deploy kyverno
+k -n kyverno edit deploy kyverno
 ...
       containers:
       - args:
@@ -14,7 +14,7 @@ $ k -n kyverno edit deploy kyverno
 ...
 ```
 
-## Task 1
+## Task
 
 Say we want our cluster to be running containers with stable images. However, there's one namespace `dev` dedicated to your engineering team where they need images created directly from the development branch which are tagged `latest`. As seen earlier, we can use the following Policy for ensuring we run stable images:
 ```yaml

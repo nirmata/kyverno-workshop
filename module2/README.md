@@ -45,7 +45,9 @@ k -n test-psa run nginx --image=nginx
 
 ## Task 2
 
-1. Create the Kyverno Policy
+Let us see how Kyverno can help address the above limitations.
+
+1. Create the Policy
 ```yaml
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
