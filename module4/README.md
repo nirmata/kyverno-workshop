@@ -70,6 +70,8 @@ kubectl run signed --image=anushah/signed:v1.0.0 --dry-run=server
 ```
 Voila! It runs!
 
-##TODO make the below as a task
+## Task
 But, do __all__ signed images run irrespective of what private key they use?
+
+Can you generate a different set of key pairs and sign an image with the newly created private key. Now try to run this image with the already existing policy. Does it work? Why?
 
