@@ -1,4 +1,4 @@
-# Module 3: Pod Security Admission
+# Module 3: Pod Security
 
 Pod Security Policies (PSPs) were removed starting K8s `1.25` . PSPs were designed to control the security specification of Pods. However, they were not intuitive to use. They're now replaced by Pod Security Admission (PSAs) which help enforce Pod Security Standards (PSSs) on a namespace level.
 
@@ -17,6 +17,7 @@ Pod Security Standards define three policies to broadly cover the security spect
 ## Task 1
 
 The following Policy would create a namespace with the `restricted` Pod Security Admission configuration.
+
 1. Create the namespace
 ```yaml
 apiVersion: v1
@@ -38,76 +39,61 @@ k -n test-psa run nginx --image=nginx
 -   Restricted in scope
 	-   Applied at a namespace level
 	-   **Example:** Filtering based on label (`purpose:  prod`) not supported
--   Don’t offer granular permissions
+-   Don‚Äö√Ñ√¥t offer granular permissions
 	-   Limited to applying PSS policies only
-	-   **Example:** Can’t have a policy to only allow pods with `securityContext.privileged:  false`
+	-   **Example:** Can‚Äö√Ñ√¥t have a policy to only allow pods with `securityContext.privileged:  false`
 -   Designed to rely on third-party tools such as Kyverno and OPA for finer control
 
 ## Task 2
 
-Let us see how Kyverno can help address the above limitations.
+PSA is designed to act on every Pod in the specified namespace, let us see how we can add exceptions for specific Pods.
 
 1. Create the Policy
 ```yaml
 apiVersion: kyverno.io/v1
-kind: ClusterPolicy
+kind: Policy
 metadata:
-  name: disallow-privilege-escalation
-  annotations:
-    policies.kyverno.io/title: Disallow Privilege Escalation
-    policies.kyverno.io/category: Pod Security Standards (Restricted)
-    policies.kyverno.io/severity: medium
-    policies.kyverno.io/subject: Pod
-    kyverno.io/kyverno-version: 1.6.0
-    kyverno.io/kubernetes-version: "1.22-1.23"
-    policies.kyverno.io/description: >-
-      Privilege escalation, such as via set-user-ID or set-group-ID file mode, should not be allowed.
-      This policy ensures the `allowPrivilegeEscalation` field is set to `false`.      
+  name: psa-host-namespaces
+  namespace: default
 spec:
-  validationFailureAction: enforce
   background: true
+  validationFailureAction: Enforce
   rules:
-    - name: privilege-escalation
-      match:
-        any:
-        - resources:
-            kinds:
-              - Pod
-      validate:
-        message: >-
-          Privilege escalation is disallowed. The fields
-          spec.containers[*].securityContext.allowPrivilegeEscalation,
-          spec.initContainers[*].securityContext.allowPrivilegeEscalation,
-          and spec.ephemeralContainers[*].securityContext.allowPrivilegeEscalation
-          must be set to `false`.          
-        pattern:
-          spec:
-            =(ephemeralContainers):
-            - securityContext:
-                allowPrivilegeEscalation: "false"
-            =(initContainers):
-            - securityContext:
-                allowPrivilegeEscalation: "false"
-            containers:
-            - securityContext:
-                allowPrivilegeEscalation: "false"
+  - name: restricted
+    match:
+      any:
+      - resources:
+          kinds:
+          - Pod
+    validate:
+      podSecurity:
+        level: restricted
+        version: latest
+        exclude:
+        - controlName: Host Namespaces
 ```
 2. Attempt to admit the Pod
-```bash
-k -n test-psa run nginx --image=nginx
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: badpod01
+spec:
+  containers:
+  - name: container01
+    image: dummyimagename
+    securityContext:
+      privileged: true
 ```
 3. Now try the following
 ```yaml
 apiVersion: v1
 kind: Pod
 metadata:
-  name: nginx
-  labels:
-    purpose: production
+  name: badpod02
 spec:
+  hostIPC: true
   containers:
-  - name: nginx
-    image: nginx:1.14.2
-    securityContext:
-      allowPrivilegeEscalation: false
+  - name: container01
+    image: dummyimagename
 ```
