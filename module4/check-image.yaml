@@ -1,0 +1,30 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: check-image
+spec:
+  validationFailureAction: Audit
+  background: false
+  webhookTimeoutSeconds: 30
+  failurePolicy: Fail
+  rules:
+    - name: check-image
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+                - Deployment
+      verifyImages:
+        - imageReferences:
+            - "docker.io/anushah/*"
+          attestors:
+            - count: 1
+              entries:
+                - keys:
+                    publicKeys: |-
+                      -----BEGIN PUBLIC KEY-----
+                      MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE1JP8mpoC8wEvOryZ8XlWKTx2BxPd
+                      j7jUn4hGiCrmSTp1ywUZErjd0Na5d3k+Z5/+r2befCqvYBYjYiirPRLmag==
+                      -----END PUBLIC KEY-----
+
