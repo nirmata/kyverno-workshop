@@ -14,7 +14,7 @@ Create a Kubernetes cluster. You may use any software with which you feel most c
 provides steps for kind.
 
 ```sh
-kind cluster create kyverno
+kind create cluster --name kyverno
 ```
 
 Add the Kyverno Helm repo
