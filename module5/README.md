@@ -14,5 +14,24 @@ A typical Namespace as a Service workflow is as follows -
 ## Task
 Now that we have some understanding of what Namespace as a Service is, let us assume the role of a platform admin and say, one of the developers requested a new namespace with certain resource specific details. As a platform admin, how can we use Kyverno to do this?
 
-### Hint
-Use the `generate` rule type to generate resources on the fly.
+First we will apply all the policies in `generate-policies` folder.
+```sh
+k apply -f generate-policies/
+```
+
+Make sure the policies are applies and in `Ready` state.
+```sh
+k get cpol
+```
+
+Now we will create a sample namespace and then verify the generation of resources.
+```sh
+k apply -f sample-ns.yaml
+```
+
+Verify whether ResourceQuota, LimitRange, and NetworkPolicy resources are created.
+```sh
+k get ResourceQuota -n test
+k get LimitRange -n test
+k get NetworkPolicy -n test
+```
