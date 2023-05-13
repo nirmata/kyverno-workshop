@@ -18,7 +18,7 @@ The above command also pushes the signature as an OCI artifact along witht the i
 
 
 Let us now look at the Kyverno policy used to verify image signatures. In the below policy, replace `imageReferences` field with your registry value and insert your public key that was generated in the above step in the `publicKeys` section.
-```sh
+```yaml
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
