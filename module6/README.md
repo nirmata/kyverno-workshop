@@ -1,6 +1,6 @@
 # Module 6: Policy Exceptions
 
-Policy Exceptions isn't GA yet, so we must enable the feature first by adding `--enablePolicyException=true` to `kyverno` container arguments.
+Policy Exceptions is currently an `alpha` feature, available behind the `--enablePolicyException` flag. Let's enable the feature in `kyverno` first by setting this flag to `true`.
 ```bash
 k -n kyverno edit deploy kyverno
 ...
@@ -16,7 +16,7 @@ k -n kyverno edit deploy kyverno
 
 ## Task
 
-Say we want our cluster to be running containers with stable images. However, there's one namespace `dev` dedicated to your engineering team where they need images created directly from the development branch which are tagged `latest`. As seen earlier, we can use the following Policy for ensuring we run stable images:
+Say we want our cluster to be running containers with version-tagged images. However, this is not a strict requirement for `dev` Pods which run with the label `type=dev` and used images created directly from the development branch which are tagged `latest`. As seen earlier, we can use the following Policy for ensuring we run version-tagged images:
 ```yaml
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
@@ -34,7 +34,7 @@ metadata:
       a specific version of an application Pod. This policy validates that the image
       specifies a tag and that it is not called `latest`.      
 spec:
-  validationFailureAction: audit
+  validationFailureAction: Enforce
   background: true
   rules:
   - name: require-image-tag
@@ -62,7 +62,7 @@ spec:
           containers:
           - image: "!*:latest"
 ```
-We can prevent this Policy from being applied to the `dev` namespace using Policy Exceptions.
+We can prevent this Policy from being applied to the `dev` Pods by using Policy Exceptions.
 ```yaml
 apiVersion: kyverno.io/v2alpha1
 kind: PolicyException
@@ -76,11 +76,20 @@ spec:
     - require-image-tag
     - validate-image-tag
   match:
-    any:
+    all:
     - resources:
         kinds:
         - Pod
         namespaces:
-        - kyverno
         - test
+        selector:
+          matchLabels:
+            type: dev
 ```
+Create the `test` namespace
+```sh
+k create ns test
+```
+Test by admitting the following Pods:
+1. `k -n test run nginx-dev --image=nginx:latest --labels type=dev`
+2. `k -n test run nginx-prod --image=nginx:latest --labels type=prod`
