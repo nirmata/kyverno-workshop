@@ -7,19 +7,24 @@ metadata:
     policies.kyverno.io/description: >-
       Generate default NetworkPolicy
 spec:
-  background: false
+  generateExistingOnPolicyUpdate: true
   rules:
     - name: default-deny
       match:
-        resources:
-          kinds:
-            - Namespace
+        any:
+          - resources:
+              kinds:
+                - Namespace
       generate:
         kind: NetworkPolicy
+        apiVersion: networking.k8s.io/v1
         name: default-deny
         namespace: "{{request.object.metadata.name}}"
         synchronize: true
         data:
+          metadata:
+            labels:
+              created-by: kyverno
           spec:
             # select all pods in the namespace
             podSelector: {}
