@@ -9,6 +9,7 @@ For this task, we will use Sigstore's [cosign](https://docs.sigstore.dev/cosign/
 cosign generate-key-pair
 ```
 
+Replace `user/demo` with the name of your container image.
 ### Sign container image
 ```sh
 cosign sign --key cosign.key user/demo
@@ -16,8 +17,8 @@ cosign sign --key cosign.key user/demo
 The above command also pushes the signature as an OCI artifact along witht the image. You can go to your image registry to verify this.
 
 
-Let us now look at the Kyverno policy used to verify image signatures. In the below policy, replace `imageReferences` field with your registry value and insert your public key that was generated in the above step in the placeholder (`<Your Public Key Here>`) provided in the `publicKeys` section.
-```yaml
+Let us now look at the Kyverno policy used to verify image signatures. In the below policy, replace `imageReferences` field with your registry value and insert your public key that was generated in the above step in the `publicKeys` section.
+```sh
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
@@ -44,23 +45,23 @@ spec:
                 - keys:
                     publicKeys: |-
                       -----BEGIN PUBLIC KEY-----
-                      <Your Public Key Here>
-                      -----END PUBLIC KEY-----
-
+                      MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE1JP8mpoC8wEvOryZ8XlWKTx2BxPd
+                      j7jUn4hGiCrmSTp1ywUZErjd0Na5d3k+Z5/+r2befCqvYBYjYiirPRLmag==
+                      -----END PUBLIC KEY-----                
 ```
 
 We will now try to run an unsigned image before applying the above policy.
 ```sh
 k run unsigned --image=anushah/unsigned:v1.0.0 --dry-run=server
 ```
-So there was no problem running. This tells us that it is possible now for __any__ image to run in our cluster. Let us apply the Kyverno policy
+So there was no problem running. This tells us that it is possible now for __any__ image to run in our cluster. Let us apply the Kyverno policy.
 ```sh
 k apply -f check-image.yaml
 ```
 
 Check if the policy is applied and ready.
 ```sh
-k get polr -A
+k get cpol
 ```
 
 Let us try to run the same unsigned image now and see what happens this time.

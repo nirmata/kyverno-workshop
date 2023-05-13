@@ -16,7 +16,7 @@ The Pod Security Standards define three different profiles to broadly cover the 
 In this task, we will first run a bad pod and understand how easy it is to run pods with elevated privileges which is a high security risk. We will then see how best practices such as Pod Security Standards help prevent such issues.
 
 ```sh
-k run r00t --restart=Never -ti --rm --image lol --overrides '{"spec":{"hostPID": true, "containers":[{"name":"1","image":"public.ecr.aws/h1a5s9h8/alpine:latest","command":["nsenter","--mount=/proc/1/ns/mnt","--","/bin/bash"],"stdin": true,"tty":true,"securityContext":{"privileged":true}}]}}'
+kubectl run r00t --restart=Never -ti --rm --image lol --overrides '{"spec":{"hostPID": true, "containers":[{"name":"1","image":"alpine:latest","command":["/bin/sh"],"stdin": true,"tty":true,"securityContext":{"privileged":true}}]}}'
 ```
 
 Install [pod security standard restricted](https://kubernetes.io/docs/concepts/security/pod-security-standards/#restricted) policies in enforce mode:
