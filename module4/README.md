@@ -1,7 +1,7 @@
 # Module 4: Supply Chain Security
 Supply chain security refers to securing every component, process and practices that are involed in building and deploying of software. In this module, we will look at one major part of this chain which is signing of container images and verifying them before deployment.
 
-## Task 1 (Image signing and verification)
+## Task 1 (Image Signing and Verification)
 
 For this task, we will use Sigstore's [cosign](https://docs.sigstore.dev/cosign/overview/) to generate a key pair and then sign an image using the private key that was generated.
 ### Generate key-pair
