@@ -16,7 +16,7 @@ k -n kyverno edit deploy kyverno
 
 ## Task
 
-Say we want our cluster to be running containers with version-tagged images. However, this is not a strict requirement for `dev` Pods which run with the label `type=dev` and used images created directly from the development branch which are tagged `latest`. As seen earlier, we can use the following Policy for ensuring we run version-tagged images:
+Say, we want our cluster to be running containers with version-tagged images. However, this is not a strict requirement for `dev` Pods which run with the label `type=dev` and use images created directly from the development branch which are tagged `latest`. As seen earlier, we can use the following Policy for ensuring we run version-tagged images:
 ```yaml
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
@@ -62,7 +62,7 @@ spec:
           containers:
           - image: "!*:latest"
 ```
-We can prevent this Policy from being applied to the `dev` Pods by using Policy Exceptions.
+We can prevent this Policy from being applied to the `dev` Pods by using the following Policy Exception:
 ```yaml
 apiVersion: kyverno.io/v2alpha1
 kind: PolicyException
