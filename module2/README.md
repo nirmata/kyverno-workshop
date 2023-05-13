@@ -22,12 +22,12 @@ kubectl run r00t --restart=Never -ti --rm --image lol --overrides '{"spec":{"hos
 Install [pod security standard restricted](https://kubernetes.io/docs/concepts/security/pod-security-standards/#restricted) policies in enforce mode:
 
 ```sh
-kustomize build https://github.com/kyverno/policies/pod-security/enforce | kubectl apply -f -
+kustomize build https://github.com/kyverno/policies/pod-security/enforce | k apply -f -
 ```
 
 Now let us try to run the bad pod again.
 ```sh
-kubectl run r00t2 --restart=Never -ti --rm --image lol --overrides '{"spec":{"hostPID": true, "containers":[{"name":"1","image":"alpine:latest","command":["/bin/sh"],"stdin": true,"tty":true,"securityContext":{"privileged":true}}]}}'
+k run r00t2 --restart=Never -ti --rm --image lol --overrides '{"spec":{"hostPID": true, "containers":[{"name":"1","image":"public.ecr.aws/h1a5s9h8/alpine:latest","command":["nsenter","--mount=/proc/1/ns/mnt","--","/bin/bash"],"stdin": true,"tty":true,"securityContext":{"privileged":true}}]}}'
 ```
 
 ### Using Kyverno to implement PSS
