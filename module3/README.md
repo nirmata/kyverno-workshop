@@ -1,60 +1,113 @@
-# Module 3: Kubernetes Best Practices using Kyverno
-Enforcing Kubernetes Best Practices becomes easier with Kyverno. This module covers some of the basic standards to get started with as you evolve in your policy and governance journey.
+# Module 3: Pod Security Admission
 
-For this exercise, we will use a combination of policies from the [kyverno/policies](https://github.com/kyverno/policies) repo and also [nirmata/kyverno-policies](https://github.com/nirmata/kyverno-policies) repo.
+Pod Security Policies (PSPs) were removed starting K8s `1.25` . PSPs were designed to control the security specification of Pods. However, they were not intuitive to use. They're now replaced by Pod Security Admission (PSAs) which help enforce Pod Security Standards (PSSs) on a namespace level.
 
-Clone both the repositories.
-```sh
-git clone git@github.com:nirmata/kyverno-policies.git
-git clone git@github.com:kyverno/policies.git
-```
-
-## Pod Security Standards (PSS)
-The Pod Security Standards define three different policies to broadly cover the security spectrum. These policies are cumulative and range from highly-permissive to highly-restrictive. For more information on PSS, refer to the official [Kubernetes documentation](https://kubernetes.io/docs/concepts/security/pod-security-standards/)
+Pod Security Standards define three policies to broadly cover the security spectrum:
+-   **privileged**
+	-   Anything is allowed!
+	-   Unrestricted
+	-   System & Infra-level workloads
+-   **baseline**
+	-   Minimally restricted
+	-   Common workloads
+-   **restricted**
+	-   Heavily restricted
+	-   Security critical workloads
 
 ## Task 1
-In this task, we will first run a bad pod and understand how easy it is to run pods with elevated privileges which is a high security risk. We will then see how best practices such as Pod Security Standards help prevent such issues.
 
-```sh
-kubectl run r00t --restart=Never -ti --rm --image lol --overrides '{"spec":{"hostPID": true, "containers":[{"name":"1","image":"public.ecr.aws/h1a5s9h8/alpine:latest","command":["nsenter","--mount=/proc/1/ns/mnt","--","/bin/bash"],"stdin": true,"tty":true,"securityContext":{"privileged":true}}]}}'
+The following Policy would create a namespace with the `restricted` Pod Security Admission configuration.
+1. Create the namespace
+```yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: test-psa
+  labels:
+    pod-security.kubernetes.io/enforce: restricted
+```
+2. Attempt a pod admission
+```bash
+k -n test-psa run nginx --image=nginx
 ```
 
-Install [pod security standard restricted](https://kubernetes.io/docs/concepts/security/pod-security-standards/#restricted) policies in enforce mode:
+## PSA Limitations
 
-```sh
-kustomize build https://github.com/kyverno/policies/pod-security/enforce | kubectl apply -f -
+-   PSA and PSS were designed for simplicity of deployment and adoption
+	-   They are limited on their own
+-   Restricted in scope
+	-   Applied at a namespace level
+	-   **Example:** Filtering based on label (`purpose:  prod`) not supported
+-   Don’t offer granular permissions
+	-   Limited to applying PSS policies only
+	-   **Example:** Can’t have a policy to only allow pods with `securityContext.privileged:  false`
+-   Designed to rely on third-party tools such as Kyverno and OPA for finer control
+
+## Task 2
+
+Let us see how Kyverno can help address the above limitations.
+
+1. Create the Policy
+```yaml
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: disallow-privilege-escalation
+  annotations:
+    policies.kyverno.io/title: Disallow Privilege Escalation
+    policies.kyverno.io/category: Pod Security Standards (Restricted)
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/subject: Pod
+    kyverno.io/kyverno-version: 1.6.0
+    kyverno.io/kubernetes-version: "1.22-1.23"
+    policies.kyverno.io/description: >-
+      Privilege escalation, such as via set-user-ID or set-group-ID file mode, should not be allowed.
+      This policy ensures the `allowPrivilegeEscalation` field is set to `false`.      
+spec:
+  validationFailureAction: enforce
+  background: true
+  rules:
+    - name: privilege-escalation
+      match:
+        any:
+        - resources:
+            kinds:
+              - Pod
+      validate:
+        message: >-
+          Privilege escalation is disallowed. The fields
+          spec.containers[*].securityContext.allowPrivilegeEscalation,
+          spec.initContainers[*].securityContext.allowPrivilegeEscalation,
+          and spec.ephemeralContainers[*].securityContext.allowPrivilegeEscalation
+          must be set to `false`.          
+        pattern:
+          spec:
+            =(ephemeralContainers):
+            - securityContext:
+                allowPrivilegeEscalation: "false"
+            =(initContainers):
+            - securityContext:
+                allowPrivilegeEscalation: "false"
+            containers:
+            - securityContext:
+                allowPrivilegeEscalation: "false"
 ```
-
-Now let us try to run the bad pod again.
-```sh
-kubectl run r00t2 --restart=Never -ti --rm --image lol --overrides '{"spec":{"hostPID": true, "containers":[{"name":"1","image":"public.ecr.aws/h1a5s9h8/alpine:latest","command":["nsenter","--mount=/proc/1/ns/mnt","--","/bin/bash"],"stdin": true,"tty":true,"securityContext":{"privileged":true}}]}}'
+2. Attempt to admit the Pod
+```bash
+k -n test-psa run nginx --image=nginx
 ```
-
-### Using Kyverno to implement PSS
-The `Baseline/Default` profile is minimally restrictive and denies the most common vulnerabilities while the `Restricted` profile is more heavily restrictive but follows many more of the common security best practices for Pods.
-
-```sh
-cd policies/pod-security
-kubectl apply -k .
-```
-
-Let us take a look at all the policies applied.
-```sh
-kubectl get polr -A
-```
-
-## RBAC
-Kubernetes RBAC is the primary authorization mechanism in Kubernetes. While powerful, it is prone to misconfigurations. When designing permissions, it is important to understand where privilege escalation could occur and to minimize the risk of security incidents due to permissive access. The controls are derived from the official [Kubernetes RBAC Good Practices](https://kubernetes.io/docs/concepts/security/rbac-good-practices/).
-
-
-### Using Kyverno to implement RBAC
-
-```sh
-cd kyverno-policies/rbac
-kubectl apply -k .
-```
-
-Let us take a look at all the policies applied.
-```sh
-kubectl get polr -A
+3. Now try the following
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    purpose: production
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.14.2
+    securityContext:
+      allowPrivilegeEscalation: false
 ```
