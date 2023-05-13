@@ -39,7 +39,7 @@ k -n test-psa run nginx --image=nginx
 -   Restricted in scope
 	-   Applied at a namespace level
 	-   **Example:** Filtering based on label (`purpose:  prod`) not supported
--   Don‚Äö√Ñ√¥t offer granular permissions
+-   Don't offer granular permissions
 	-   Limited to applying PSS policies only
 	-   **Example:** Can‚Äö√Ñ√¥t have a policy to only allow pods with `securityContext.privileged:  false`
 -   Designed to rely on third-party tools such as Kyverno and OPA for finer control
